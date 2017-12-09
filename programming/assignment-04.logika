@@ -1,0 +1,9 @@
+import org.sireum.logika._
+
+var hours: Z = 4
+
+val minutes: Z = hours * 60
+
+
+hours = 5
+

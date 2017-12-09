@@ -1,0 +1,10 @@
+import org.sireum.logika._
+
+val hours: Z = readInt("Type an int > 2: ")
+
+assume(hours > 2)
+
+
+val minutes: Z = hours * 60
+
+assert(minutes > 120)

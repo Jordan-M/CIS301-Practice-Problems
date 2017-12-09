@@ -1,0 +1,4 @@
+∃x∀y isBossOf(x,y) |- ∃z isBossOf(z,z)
+{
+
+}

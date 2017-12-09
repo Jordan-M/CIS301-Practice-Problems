@@ -1,0 +1,28 @@
+import org.sireum.logika._
+
+val x: Z = readInt()
+val y: Z = readInt()
+
+var r: Z = 0
+
+if (x < y) {
+
+  r = -1
+
+
+} else {
+  if (x > y) {
+
+
+    r = 1
+
+
+  } else {
+
+  }
+
+}
+
+
+
+assert(r >= -1 & r <= 1 & (r != 0 | x == y))

@@ -1,0 +1,31 @@
+import org.sireum.logika._
+
+def allPos(a: ZS): B = {
+  l"""{ ensures result → ∀j: Z  0 ≤ j ∧ j < a.size → a(j) > 0 }"""
+
+  var i: Z = 0
+
+  var r: B = true
+
+
+  while (i < a.size) {
+    l"""{ invariant 0 ≤ i
+                    i ≤ a.size
+                    r → ∀j: Z  0 ≤ j ∧ j < i → a(j) > 0
+          modifies i, r }"""
+
+    if (a(i) <= 0) {
+
+      r = false
+
+           
+    } else {
+
+    }
+
+    i = i + 1
+    
+  }
+
+  return r
+}

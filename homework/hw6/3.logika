@@ -1,0 +1,26 @@
+import org.sireum.logika._
+
+def reverse(a: ZS): Unit = {
+  l"""{ modifies a
+        ensures  ??? // FIXME
+  }"""
+  var j: Z = 0
+
+  println("Before loop: a = ", a, ", j = ", j)
+
+  while (j < a.size / 2) {
+    l"""{ invariant ??? // FIXME
+          modifies  j, a }"""
+
+    println("Loop pre:    a = ", a, ", j = ", j)
+
+    val t: Z = a(j)
+    a(j) = a(a.size - j - 1)
+    a(a.size - j - 1) = t
+    j = j + 1
+
+    println("Loop post:   a = ", a, ", j = ", j)
+  }
+
+  println("After loop:  a = ", a, ", j = ", j)
+}

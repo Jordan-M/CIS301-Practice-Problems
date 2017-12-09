@@ -1,0 +1,9 @@
+import org.sireum.logika._
+
+val x: Z = 1
+val y: Z = 5
+
+
+val q: Z = x + y
+
+assert(q > 5)

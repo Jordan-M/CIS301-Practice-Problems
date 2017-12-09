@@ -1,0 +1,3 @@
+∀x human(x) → mortal(x),  ∀y mortal(y) → soul(y)  ⊢ ∀x human(x) → soul(x)
+{
+}

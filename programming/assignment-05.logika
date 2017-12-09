@@ -1,0 +1,9 @@
+import org.sireum.logika._
+
+var x: Z = readInt("Enter an integer > 0: ")
+
+assume(x > 0)
+
+x = x + 1
+
+assert(x > 1)

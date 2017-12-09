@@ -1,0 +1,15 @@
+import org.sireum.logika._
+
+var x: Z = readInt()
+var y: Z = readInt()
+
+val xIn: Z = x
+val yIn: Z = y
+
+x = x + y
+
+y = x - y
+
+x = x - y
+
+assert(x == yIn & y == xIn)

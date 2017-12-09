@@ -1,0 +1,23 @@
+import org.sireum.logika._
+
+val x: Z = readInt()
+val y: Z = readInt()
+val z: Z = readInt()
+
+var r: Z = x
+if (r > y) {
+  r = y
+
+} else {
+
+}
+l"""{ // hints: by this point, you should be able to deduce r ≤ x and r ≤ y
+
+if (r > z) {
+  r = z
+
+} else {
+
+}
+
+assert(r <= x & r <= y & r <= z)

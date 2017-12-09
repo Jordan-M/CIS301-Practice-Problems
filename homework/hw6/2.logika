@@ -1,0 +1,30 @@
+import org.sireum.logika._
+
+def add(set: ZS, element: Z): ZS = {
+  l"""{ requires ??? // FIXME
+        ensures  ??? // FIXME
+  }"""
+  var k: Z = 0
+
+  println("Before loop: set = ", set, ", k = ", k)
+
+  while (k < set.size) {
+    l"""{ invariant ??? // FIXME
+          modifies  k }"""
+
+    println("Loop pre:    set = ", set, ", k = ", k)
+
+    if (set(k) == element) {
+      val r: ZS = set.clone
+      return r
+    }
+    k = k + 1
+
+    println("Loop post:   set = ", set, ", k = ", k)
+
+  }
+
+  println("After loop:  set = ", set, ", k = ", k)
+
+  return set :+ element
+}

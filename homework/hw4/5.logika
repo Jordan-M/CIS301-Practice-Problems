@@ -1,0 +1,3 @@
+∀p ∀q xor1(p, q) → (p ∧ ¬q) ∨ (¬p ∧ q), ∀p ∀q (p ∧ ¬q) ∨ (¬p ∧ q) → xor1(p, q), ∀p ∀q xor2(p, q) → (p ∨ q) ∧ (¬p ∨ ¬q), ∀p ∀q (p ∨ q) ∧ (¬p ∨ ¬q) → xor2(p, q) ⊢ ∀p ∀q xor1(p, q) → xor2(p, q)
+{
+}

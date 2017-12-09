@@ -1,0 +1,12 @@
+/* The ``twoOrMorePos`` method returns ``true``
+   if and only if there are at least two *distinct positive elements* of
+   an integer sequence; */
+
+import org.sireum.logika._
+
+def twoOrMorePos(a: ZS): B = {
+  l"""{ ensures result ==
+  val r: B = false // implementation code elided
+  assume(r)        // implementation code elided
+  return r
+}

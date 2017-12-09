@@ -1,0 +1,30 @@
+import org.sireum.logika._
+
+l"""{ fact
+        def M(zs: ZS, k: Z): Z
+          = 1,                        if k == 0               (MZero)
+          = zs(k - 1) * M(zs, k - 1), if 0 < k ∧ k ≤ zs.size   (MPos) }"""
+
+def product(a: ZS): Z = {
+  l"""{ ensures result == M(a, a.size) }"""
+
+  var r: Z = 1
+  var i: Z = 0
+
+  while (i < a.size) {
+    l"""{ invariant r == M(a, i)
+                    0 ≤ i
+                    i ≤ a.size
+          modifies  r, i }"""
+
+    r = a(i) * r
+
+
+    i = i + 1
+
+
+  }
+
+
+  return r
+}

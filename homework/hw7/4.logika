@@ -1,0 +1,177 @@
+import org.sireum.logika._
+
+l"""{ fact
+        def Fib(m: Z): Z
+          FZero.      Fib(0) == 0
+          FOne.       Fib(1) == 1
+          FTwoOrMore. ∀m: Z m > 1 → Fib(m) = Fib(m - 1) + Fib(m - 2) }"""
+
+var cache: ZS = ZS(0, 1)
+
+l"""{ invariant true // FIXME
+}"""
+
+def ensureCacheCapacity(m: Z): Unit = {
+  l"""{ modifies cache
+        ensures  true // FIXME
+  }"""
+
+  if (cache.size < m) {
+
+    println("Expanding cache...")
+
+    val newCache: ZS = ZS.create(m * 3 / 2, -1)
+    var k: Z = 0
+
+    println("Before loop: cache = ", cache, ", newCache = ", newCache, ", k = ", k)
+
+    while (k < cache.size) {
+      l"""{ invariant true // FIXME
+            modifies  k, newCache }"""
+
+      println("Loop pre:    cache = ", cache, ", newCache = ", newCache, ", k = ", k)
+
+      newCache(k) = cache(k)
+      k = k + 1
+
+      println("Loop post:   cache = ", cache, ", newCache = ", newCache, ", k = ", k)
+    }
+
+    println("After loop:  cache = ", cache, ", newCache = ", newCache, ", k = ", k)
+
+    cache = newCache.clone
+
+    println("Cache expanded!")
+  }
+}
+
+def fibonacci(n: Z): Z = {
+  l"""{ requires true // FIXME
+        modifies cache
+        ensures  true // FIXME
+  }"""
+
+  println("Entry:       n = ", n, ", cache = ", cache)
+
+  var r: Z = n
+
+  if (n < 2) {
+    return r
+  }
+
+  ensureCacheCapacity(n + 1)
+
+  r = cache(n)
+  if (r == -1) {
+    val f1: Z = fibonacci(n - 1)
+    val f2: Z = fibonacci(n - 2)
+    r = f1 + f2
+    cache(n) = r
+    println("Cache updated! cache(", n, ") = ", r)
+  } else {
+    println("Cache hit! cache(", n, ") = ", r)
+  }
+
+  println("Exit:        n = ", n, ", cache = ", cache, ", r = ", r)
+  return r
+}
+
+// Verified Tests
+
+val test1: Z = fibonacci(4)
+/* Trace log:
+Entry:       n = 4, cache = [0, 1]
+Expanding cache...
+Before loop: cache = [0, 1], newCache = [-1, -1, -1, -1, -1, -1, -1], k = 0
+Loop pre:    cache = [0, 1], newCache = [-1, -1, -1, -1, -1, -1, -1], k = 0
+Loop post:   cache = [0, 1], newCache = [0, -1, -1, -1, -1, -1, -1], k = 1
+Loop pre:    cache = [0, 1], newCache = [0, -1, -1, -1, -1, -1, -1], k = 1
+Loop post:   cache = [0, 1], newCache = [0, 1, -1, -1, -1, -1, -1], k = 2
+After loop:  cache = [0, 1], newCache = [0, 1, -1, -1, -1, -1, -1], k = 2
+Cache expanded!
+Entry:       n = 3, cache = [0, 1, -1, -1, -1, -1, -1]
+Entry:       n = 2, cache = [0, 1, -1, -1, -1, -1, -1]
+Entry:       n = 1, cache = [0, 1, -1, -1, -1, -1, -1]
+Cache hit! cache(1) = 1
+Exit:        n = 1, cache = [0, 1, -1, -1, -1, -1, -1], r = 1
+Entry:       n = 0, cache = [0, 1, -1, -1, -1, -1, -1]
+Cache hit! cache(0) = 0
+Exit:        n = 0, cache = [0, 1, -1, -1, -1, -1, -1], r = 0
+Cache updated! cache(2) = 1
+Exit:        n = 2, cache = [0, 1, 1, -1, -1, -1, -1], r = 1
+Entry:       n = 1, cache = [0, 1, 1, -1, -1, -1, -1]
+Cache hit! cache(1) = 1
+Exit:        n = 1, cache = [0, 1, 1, -1, -1, -1, -1], r = 1
+Cache updated! cache(3) = 2
+Exit:        n = 3, cache = [0, 1, 1, 2, -1, -1, -1], r = 2
+Entry:       n = 2, cache = [0, 1, 1, 2, -1, -1, -1]
+Cache hit! cache(2) = 1
+Exit:        n = 2, cache = [0, 1, 1, 2, -1, -1, -1], r = 1
+Cache updated! cache(4) = 3
+Exit:        n = 4, cache = [0, 1, 1, 2, 3, -1, -1], r = 3
+*/
+assert(test1 == 3)
+
+val test2: Z = fibonacci(9)
+/* Trace log:
+Entry:       n = 9, cache = [0, 1, 1, 2, 3, -1, -1]
+Expanding cache...
+Before loop: cache = [0, 1, 1, 2, 3, -1, -1], newCache = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 0
+Loop pre:    cache = [0, 1, 1, 2, 3, -1, -1], newCache = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 0
+Loop post:   cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 1
+Loop pre:    cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 1
+Loop post:   cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 2
+Loop pre:    cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 2
+Loop post:   cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 3
+Loop pre:    cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 3
+Loop post:   cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 4
+Loop pre:    cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 4
+Loop post:   cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 5
+Loop pre:    cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 5
+Loop post:   cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 6
+Loop pre:    cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 6
+Loop post:   cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 7
+After loop:  cache = [0, 1, 1, 2, 3, -1, -1], newCache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], k = 7
+Cache expanded!
+Entry:       n = 8, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+Entry:       n = 7, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+Entry:       n = 6, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+Entry:       n = 5, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+Entry:       n = 4, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+Cache hit! cache(4) = 3
+Exit:        n = 4, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], r = 3
+Entry:       n = 3, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+Cache hit! cache(3) = 2
+Exit:        n = 3, cache = [0, 1, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], r = 2
+Cache updated! cache(5) = 5
+Exit:        n = 5, cache = [0, 1, 1, 2, 3, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1], r = 5
+Entry:       n = 4, cache = [0, 1, 1, 2, 3, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+Cache hit! cache(4) = 3
+Exit:        n = 4, cache = [0, 1, 1, 2, 3, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1], r = 3
+Cache updated! cache(6) = 8
+Exit:        n = 6, cache = [0, 1, 1, 2, 3, 5, 8, -1, -1, -1, -1, -1, -1, -1, -1], r = 8
+Entry:       n = 5, cache = [0, 1, 1, 2, 3, 5, 8, -1, -1, -1, -1, -1, -1, -1, -1]
+Cache hit! cache(5) = 5
+Exit:        n = 5, cache = [0, 1, 1, 2, 3, 5, 8, -1, -1, -1, -1, -1, -1, -1, -1], r = 5
+Cache updated! cache(7) = 13
+Exit:        n = 7, cache = [0, 1, 1, 2, 3, 5, 8, 13, -1, -1, -1, -1, -1, -1, -1], r = 13
+Entry:       n = 6, cache = [0, 1, 1, 2, 3, 5, 8, 13, -1, -1, -1, -1, -1, -1, -1]
+Cache hit! cache(6) = 8
+Exit:        n = 6, cache = [0, 1, 1, 2, 3, 5, 8, 13, -1, -1, -1, -1, -1, -1, -1], r = 8
+Cache updated! cache(8) = 21
+Exit:        n = 8, cache = [0, 1, 1, 2, 3, 5, 8, 13, 21, -1, -1, -1, -1, -1, -1], r = 21
+Entry:       n = 7, cache = [0, 1, 1, 2, 3, 5, 8, 13, 21, -1, -1, -1, -1, -1, -1]
+Cache hit! cache(7) = 13
+Exit:        n = 7, cache = [0, 1, 1, 2, 3, 5, 8, 13, 21, -1, -1, -1, -1, -1, -1], r = 13
+Cache updated! cache(9) = 34
+Exit:        n = 9, cache = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, -1, -1, -1, -1, -1], r = 34
+*/
+assert(test2 == 34)
+
+val test3: Z = fibonacci(7)
+/* Trace log:
+Entry:       n = 7, cache = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, -1, -1, -1, -1, -1]
+Cache hit! cache(7) = 13
+Exit:        n = 7, cache = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, -1, -1, -1, -1, -1], r = 13
+*/
+assert(test3 == 13)

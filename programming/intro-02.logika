@@ -1,0 +1,7 @@
+import org.sireum.logika._
+
+val x: Z = 0
+
+val y: Z = 2 + x
+
+assert(y == 2 + 0)

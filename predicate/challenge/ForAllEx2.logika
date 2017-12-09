@@ -1,0 +1,4 @@
+∀x healthy(x) → happy(x) ⊢ (∀y healthy(y)) → ∀x happy(x)
+{
+
+}

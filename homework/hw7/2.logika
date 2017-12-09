@@ -1,0 +1,162 @@
+import org.sireum.logika._
+
+val MAX: Z = 3
+var queue: ZS = ZS.create(MAX, 0)
+var numOfElements: Z = 0
+
+l"""{ invariant true // FIXME
+}"""
+
+def add(n: Z): Unit = {
+  l"""{ requires true // FIXME
+        modifies queue, numOfElements
+        ensures  true // FIXME
+  }"""
+
+  println("Add entry:   queue = ", queue, ", numOfElements = ", numOfElements, ", n = ", n)
+
+  queue(numOfElements) = n
+  numOfElements = numOfElements + 1
+
+  println("Add exit:    queue = ", queue, ", numOfElements = ", numOfElements, ", n = ", n)
+}
+
+def take(): Z = {
+  l"""{ requires true // FIXME
+        modifies queue, numOfElements
+        ensures  true // FIXME
+  }"""
+
+  println("Take entry:  queue = ", queue, ", numOfElements = ", numOfElements)
+
+  val r: Z = queue(0)
+  var k: Z = 0
+
+  println("Before loop: queue = ", queue, ", k = ", k)
+
+  while (k < numOfElements - 1) {
+    l"""{ invariant true // FIXME
+          modifies k, queue }"""
+
+    println("Loop pre:    queue = ", queue, ", k = ", k)
+
+    queue(k) = queue(k + 1)
+    k = k + 1
+
+    println("Loop post:   queue = ", queue, ", k = ", k)
+  }
+
+  println("After loop:  queue = ", queue, ", k = ", k)
+
+  numOfElements = numOfElements - 1
+  queue(numOfElements) = 0
+
+  println("Take exit:   queue = ", queue, ", numOfElements = ", numOfElements, ", r = ", r)
+
+  return r
+}
+
+// Verified Tests
+
+def randomN(n: Z): Z = {
+  var r: Z = randomInt()
+  if (r < 0) {
+    r = -r
+  }
+  return r % n
+}
+
+def test1(): Unit = {
+  l"""{ modifies queue, numOfElements }"""
+  if (numOfElements == 0) {
+    val add1: Z = randomN(10)
+    add(add1)
+    val take1: Z = take()
+    assert(take1 == add1)
+  }
+}
+
+def test2(): Unit = {
+  l"""{ modifies queue, numOfElements }"""
+  if (numOfElements == 0) {
+    val add1: Z = randomN(10)
+    val add2: Z = randomN(10)
+    add(add1)
+    add(add2)
+    val take1: Z = take()
+    val take2: Z = take()
+    assert(take1 == add1 & take2 == add2)
+  }
+}
+
+def test3(): Unit = {
+  l"""{ modifies queue, numOfElements }"""
+  if (numOfElements == 0) {
+    val add1: Z = randomN(10)
+    val add2: Z = randomN(10)
+    val add3: Z = randomN(10)
+    add(add1)
+    add(add2)
+    add(add3)
+    val take1: Z = take()
+    val take2: Z = take()
+    val take3: Z = take()
+    assert(take1 == add1 & take2 == add2 & take3 == add3)
+  }
+}
+
+test1()
+/* Trace log:
+Add entry:   queue = [0, 0, 0], numOfElements = 0, n = 3
+Add exit:    queue = [3, 0, 0], numOfElements = 1, n = 3
+Take entry:  queue = [3, 0, 0], numOfElements = 1
+Before loop: queue = [3, 0, 0], k = 0
+After loop:  queue = [3, 0, 0], k = 0
+Take exit:   queue = [0, 0, 0], numOfElements = 0, r = 3
+*/
+
+test2()
+/* Trace log:
+Add entry:   queue = [0, 0, 0], numOfElements = 0, n = 8
+Add exit:    queue = [8, 0, 0], numOfElements = 1, n = 8
+Add entry:   queue = [8, 0, 0], numOfElements = 1, n = 2
+Add exit:    queue = [8, 2, 0], numOfElements = 2, n = 2
+Take entry:  queue = [8, 2, 0], numOfElements = 2
+Before loop: queue = [8, 2, 0], k = 0
+Loop pre:    queue = [8, 2, 0], k = 0
+Loop post:   queue = [2, 2, 0], k = 1
+After loop:  queue = [2, 2, 0], k = 1
+Take exit:   queue = [2, 0, 0], numOfElements = 1, r = 8
+Take entry:  queue = [2, 0, 0], numOfElements = 1
+Before loop: queue = [2, 0, 0], k = 0
+After loop:  queue = [2, 0, 0], k = 0
+Take exit:   queue = [0, 0, 0], numOfElements = 0, r = 2
+*/
+
+test3()
+/* Trace log
+Add entry:   queue = [0, 0, 0], numOfElements = 0, n = 4
+Add exit:    queue = [4, 0, 0], numOfElements = 1, n = 4
+Add entry:   queue = [4, 0, 0], numOfElements = 1, n = 1
+Add exit:    queue = [4, 1, 0], numOfElements = 2, n = 1
+Add entry:   queue = [4, 1, 0], numOfElements = 2, n = 4
+Add exit:    queue = [4, 1, 4], numOfElements = 3, n = 4
+Take entry:  queue = [4, 1, 4], numOfElements = 3
+Before loop: queue = [4, 1, 4], k = 0
+Loop pre:    queue = [4, 1, 4], k = 0
+Loop post:   queue = [1, 1, 4], k = 1
+Loop pre:    queue = [1, 1, 4], k = 1
+Loop post:   queue = [1, 4, 4], k = 2
+After loop:  queue = [1, 4, 4], k = 2
+Take exit:   queue = [1, 4, 0], numOfElements = 2, r = 4
+Take entry:  queue = [1, 4, 0], numOfElements = 2
+Before loop: queue = [1, 4, 0], k = 0
+Loop pre:    queue = [1, 4, 0], k = 0
+Loop post:   queue = [4, 4, 0], k = 1
+After loop:  queue = [4, 4, 0], k = 1
+Take exit:   queue = [4, 0, 0], numOfElements = 1, r = 1
+Take entry:  queue = [4, 0, 0], numOfElements = 1
+Before loop: queue = [4, 0, 0], k = 0
+After loop:  queue = [4, 0, 0], k = 0
+Take exit:   queue = [0, 0, 0], numOfElements = 0, r = 4
+*/

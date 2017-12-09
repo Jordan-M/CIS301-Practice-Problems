@@ -1,0 +1,170 @@
+import org.sireum.logika._
+
+def rotateRight(a: ZS, n: Z): ZS = {
+  l"""{ requires true // FIXME
+        ensures  true // FIXME
+  }"""
+
+  var k: Z = 0
+  val r: ZS = ZS.create(a.size, 0)
+
+  while (k < n) {
+    l"""{ invariant true // FIXME
+          modifies k, r }"""
+
+    r(k) = a(a.size + k - n)
+    k = k + 1
+  }
+
+  while (k < a.size) {
+    l"""{ invariant true // FIXME
+          modifies k, r
+        }"""
+
+    r(k) = a(k - n)
+    k = k + 1
+  }
+
+  return r
+}
+
+def initSubstMap(n: Z): ZS = {
+  l"""{ requires n ≥ 0
+        ensures  ∀i: (0 ..< n) result(i) == i
+                 result.size = n }"""
+  val r: ZS = ZS.create(n, 0)
+
+  var k: Z = 0
+  while (k < n) {
+    l"""{ invariant 0 ≤ k ∧ k ≤ n
+                    ∀i: (0 ..< k) r(i) == i
+                    r.size == n
+          modifies  k, r }"""
+    r(k) = k
+    k = k + 1
+  }
+
+  return r
+}
+
+
+def crypt(data: ZS, n: Z, m: Z): Unit = {
+  l"""{ requires true // FIXME
+        modifies data
+        ensures  true // FIXME
+  }"""
+
+  val im: ZS = initSubstMap(n)
+
+  val substMap: ZS = rotateRight(im, m)
+
+  println("Substitution map: substMap = ", substMap)
+
+  var k: Z = 0
+
+  println("Before loop: data = ", data, ", k = ", k)
+
+  while (k < data.size) {
+    l"""{ invariant true // FIXME
+          modifies  k, data }"""
+
+    println("Loop pre:    data = ", data, ", k = ", k)
+
+    val d: Z = data(k)
+    if (0 <= d & d < n) {
+      data(k) = substMap(data(k))
+      l"""{ // hint: the following should be verifiable
+            1. data(k) == (n + data_in(k) - m) % n  auto }"""
+    }
+    k = k + 1
+
+    println("Loop post:   data = ", data, ", k = ", k)
+  }
+
+  println("After loop:  data = ", data, ", k = ", k)
+}
+
+def rot5(data: ZS): Unit = {
+  l"""{ modifies data
+        ensures  true // FIXME
+  }"""
+  crypt(data, 10, 5)
+}
+
+// The following rot5 theorem should be verifiable:
+// Calling rot5 twice does not actually change input data
+// (i.e., the first call encrypts the data, and the second call decrypts it back).
+def rot5Theorem(data: ZS): Unit = {
+  l"""{ modifies data
+        ensures  data == data_in }"""
+  rot5(data) // encrypt
+  rot5(data) // decrypt
+}
+
+// The following tests should be verifiable
+
+// Test #1
+val a1: ZS = ZS(0, 1, 2)
+rot5(a1)
+/* Trace log:
+Initial substitution map: im = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Substitution map: substMap = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4]
+Before loop: data = [0, 1, 2], k = 0
+Loop pre:    data = [0, 1, 2], k = 0
+Loop post:   data = [5, 1, 2], k = 1
+Loop pre:    data = [5, 1, 2], k = 1
+Loop post:   data = [5, 6, 2], k = 2
+Loop pre:    data = [5, 6, 2], k = 2
+Loop post:   data = [5, 6, 7], k = 3
+After loop:  data = [5, 6, 7], k = 3
+*/
+assert(a1 == ZS(5, 6, 7))
+rot5(a1)
+/* Trace log:
+Initial substitution map: im = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Substitution map: substMap = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4]
+Before loop: data = [5, 6, 7], k = 0
+Loop pre:    data = [5, 6, 7], k = 0
+Loop post:   data = [0, 6, 7], k = 1
+Loop pre:    data = [0, 6, 7], k = 1
+Loop post:   data = [0, 1, 7], k = 2
+Loop pre:    data = [0, 1, 7], k = 2
+Loop post:   data = [0, 1, 2], k = 3
+After loop:  data = [0, 1, 2], k = 3
+*/
+assert(a1 == ZS(0, 1, 2))
+
+// Test #2
+val a0: ZS = ZS(1, 5, 11, 8)
+rot5(a0)
+/* Trace log:
+Initial substitution map: im = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Substitution map: substMap = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4]
+Before loop: data = [1, 5, 11, 8], k = 0
+Loop pre:    data = [1, 5, 11, 8], k = 0
+Loop post:   data = [6, 5, 11, 8], k = 1
+Loop pre:    data = [6, 5, 11, 8], k = 1
+Loop post:   data = [6, 0, 11, 8], k = 2
+Loop pre:    data = [6, 0, 11, 8], k = 2
+Loop post:   data = [6, 0, 11, 8], k = 3
+Loop pre:    data = [6, 0, 11, 8], k = 3
+Loop post:   data = [6, 0, 11, 3], k = 4
+After loop:  data = [6, 0, 11, 3], k = 4
+*/
+assert(a0 == ZS(6, 0, 11, 3))
+rot5(a0)
+/* Trace log:
+Initial substitution map: im = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Substitution map: substMap = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4]
+Before loop: data = [6, 0, 11, 3], k = 0
+Loop pre:    data = [6, 0, 11, 3], k = 0
+Loop post:   data = [1, 0, 11, 3], k = 1
+Loop pre:    data = [1, 0, 11, 3], k = 1
+Loop post:   data = [1, 5, 11, 3], k = 2
+Loop pre:    data = [1, 5, 11, 3], k = 2
+Loop post:   data = [1, 5, 11, 3], k = 3
+Loop pre:    data = [1, 5, 11, 3], k = 3
+Loop post:   data = [1, 5, 11, 8], k = 4
+After loop:  data = [1, 5, 11, 8], k = 4
+*/
+assert(a0 == ZS(1, 5, 11, 8))

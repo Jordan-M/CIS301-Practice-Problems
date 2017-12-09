@@ -1,0 +1,12 @@
+import org.sireum.logika._
+
+val x: Z = readInt("Enter x: ")
+
+val y: Z = readInt("Enter y (< x): ")
+
+assume(x > y)
+
+val max: Z = x
+
+assert(max >= x)
+assert(max >= y)

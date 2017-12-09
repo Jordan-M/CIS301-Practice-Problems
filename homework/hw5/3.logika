@@ -1,0 +1,17 @@
+import org.sireum.logika._
+
+val x: Z = readInt()
+
+assume(x >= 0)
+
+var r: Z = x
+
+while (r >= 2) {
+  l"""{ invariant r ≥ 0
+                  (r % 2 == 0) == (x % 2 == 0)
+        modifies  r }"""
+
+  r = r - 2
+}
+
+assert((r == 0) == (x % 2 == 0) & (r == 1) == (x % 2 == 1))

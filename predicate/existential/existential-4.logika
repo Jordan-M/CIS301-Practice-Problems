@@ -1,0 +1,3 @@
+∀x human(x) → mortal(x),  ∃y human(y)  ⊢ ∃z mortal(z)
+{
+}

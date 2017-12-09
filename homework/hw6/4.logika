@@ -1,0 +1,43 @@
+import org.sireum.logika._
+
+def rotateRight(a: ZS, n: Z): ZS = {
+  l"""{ requires ??? // FIXME
+        ensures  ??? // FIXME
+  }"""
+
+  var k: Z = 0
+  var r: ZS = ZS.create(a.size, 0)
+
+  println("Before loop 1: a = ", a, ", n = ", n, ", k = ", k, ", r = ", r)
+
+  while (k < n) {
+    l"""{ invariant ??? // FIXME
+          modifies k, r }"""
+
+    println("Loop 1 pre:    a = ", a, ", n = ", n, ", k = ", k, ", r = ", r)
+
+    r(k) = a(a.size + k - n)
+    k = k + 1
+
+    println("Loop 1 post:   a = ", a, ", n = ", n, ", k = ", k, ", r = ", r)
+  }
+
+  println("After loop 1:  a = ", a, ", n = ", n, ", k = ", k, ", r = ", r, " (Before loop 2)")
+
+  while (k < a.size) {
+    l"""{ invariant ??? // FIXME
+          modifies k, r
+        }"""
+
+    println("Loop 2 pre:    a = ", a, ", n = ", n, ", k = ", k, ", r = ", r)
+
+    r(k) = a(k - n)
+    k = k + 1
+
+    println("Loop 2 post:   a = ", a, ", n = ", n, ", k = ", k, ", r = ", r)
+  }
+
+  println("After loop 2:  a = ", a, ", n = ", n, ", k = ", k, ", r = ", r)
+
+  return r
+}

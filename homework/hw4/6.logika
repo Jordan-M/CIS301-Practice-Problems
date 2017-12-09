@@ -1,0 +1,4 @@
+∀p ∀q eq(p, q) → (p → q) ∧ (q → p),
+∀p ∀q (p → q) ∧ (q → p) → eq(p, q) ⊢
+∀p ∀q ∀r eq(p, q) ∧ eq(q, r) → eq(p, r)
+{}

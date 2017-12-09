@@ -1,0 +1,30 @@
+import org.sireum.logika._
+
+l"""{ fact
+        def P(a: Z, b: Z): Z
+          PZero. ∀a: Z  ∀b: Z  b = 0 → P(a, b) = 1
+          PPos.  ∀a: Z  ∀b: Z  b > 0 → P(a, b) = P(a, b - 1) * a }"""
+
+// Computes n to the power of (non-negative) m
+def power(n: Z, m: Z): Z = {
+  l"""{ requires m ≥ 0
+        ensures  result = P(n, m) }"""
+
+  var i: Z = 0
+  var r: Z = 1
+
+  while (i < m) {
+    l"""{ invariant 0 ≤ i
+                    i ≤ m
+                    r = P(n, i)
+          modifies  i, r }"""
+
+    r = r * n
+
+    i = i + 1
+
+  } // end of while-loop
+
+
+  return r
+} // end of power method

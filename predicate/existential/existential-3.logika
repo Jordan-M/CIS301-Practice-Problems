@@ -1,0 +1,4 @@
+
+vowel(e),  holds(square14, e)  ⊢ ∃y,x vowel(y) ∧ holds(x, y)
+{
+}

@@ -1,0 +1,9 @@
+import org.sireum.logika._
+
+val x: Z = readInt()
+
+val y: Z = x + 1
+
+val z: Z = x - 1
+
+assert(z == y - 2)

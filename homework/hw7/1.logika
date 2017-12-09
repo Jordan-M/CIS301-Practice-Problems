@@ -1,0 +1,180 @@
+import org.sireum.logika._
+
+def swap(a: ZS, i: Z, j: Z): Unit = {
+  l"""{ requires 0 ≤ i ∧ i < a.size
+                 0 ≤ j ∧ j < a.size
+        modifies a
+        ensures  a(i) == a_in(j) ∧ a(j) == a_in(i)
+                 ∀k: (0 ..< a.size)
+                   k ≠ i ∧ k ≠ j → a(k) == a_in(k)
+                 a.size == a_in.size }"""
+  val t: Z = a(i)
+  a(i) = a(j)
+  a(j) = t
+}
+
+def bubbleSort(a: ZS): Unit = {
+  l"""{ modifies a
+        ensures true // FIXME
+  }"""
+
+  var k: Z = 0
+
+  println("Before loop 1: a = ", a, ", k = ", k)
+
+  while (k < a.size - 1) {
+    l"""{ invariant true // FIXME
+          modifies  a, k }"""
+
+    println("Loop 1 pre:    a = ", a, ", k = ", k)
+
+    var l: Z = 0
+
+    println("Before loop 2: a = ", a, ", k = ", k, ", l = ", l)
+
+    while (l < a.size - k - 1) {
+      l"""{ invariant true // FIXME
+            modifies  a, l }"""
+
+      println("Loop 2 pre:    a = ", a, ", k = ", k, ", l = ", l)
+
+      if (a(l) > a(l + 1)) {
+        swap(a, l, l + 1)
+      }
+
+      l = l + 1
+
+      println("Loop 2 post:   a = ", a, ", k = ", k, ", l = ", l)
+    }
+
+    println("After 2 loop:  a = ", a, ", k = ", k, ", l = ", l)
+
+    k = k + 1
+
+    println("Loop 1 post:   a = ", a, ", k = ", k)
+  }
+
+  println("After 1 loop:  a = ", a, ", k = ", k)
+}
+
+// Verified Tests
+
+val test1: ZS = ZS(2, 3, 1)
+bubbleSort(test1)
+/* Trace log:
+Before loop 1: a = [2, 3, 1], k = 0
+Loop 1 pre:    a = [2, 3, 1], k = 0
+Before loop 2: a = [2, 3, 1], k = 0, l = 0
+Loop 2 pre:    a = [2, 3, 1], k = 0, l = 0
+Loop 2 post:   a = [2, 3, 1], k = 0, l = 1
+Loop 2 pre:    a = [2, 3, 1], k = 0, l = 1
+Loop 2 post:   a = [2, 1, 3], k = 0, l = 2
+After 2 loop:  a = [2, 1, 3], k = 0, l = 2
+Loop 1 post:   a = [2, 1, 3], k = 1
+Loop 1 pre:    a = [2, 1, 3], k = 1
+Before loop 2: a = [2, 1, 3], k = 1, l = 0
+Loop 2 pre:    a = [2, 1, 3], k = 1, l = 0
+Loop 2 post:   a = [1, 2, 3], k = 1, l = 1
+After 2 loop:  a = [1, 2, 3], k = 1, l = 1
+Loop 1 post:   a = [1, 2, 3], k = 2
+After 1 loop:  a = [1, 2, 3], k = 2
+*/
+assert(test1(0) <= test1(1) & test1(1) <= test1(2))
+
+val test2: ZS = ZS(8, 7, 8)
+bubbleSort(test2)
+/*
+Before loop 1: a = [8, 7, 8], k = 0
+Loop 1 pre:    a = [8, 7, 8], k = 0
+Before loop 2: a = [8, 7, 8], k = 0, l = 0
+Loop 2 pre:    a = [8, 7, 8], k = 0, l = 0
+Loop 2 post:   a = [7, 8, 8], k = 0, l = 1
+Loop 2 pre:    a = [7, 8, 8], k = 0, l = 1
+Loop 2 post:   a = [7, 8, 8], k = 0, l = 2
+After 2 loop:  a = [7, 8, 8], k = 0, l = 2
+Loop 1 post:   a = [7, 8, 8], k = 1
+Loop 1 pre:    a = [7, 8, 8], k = 1
+Before loop 2: a = [7, 8, 8], k = 1, l = 0
+Loop 2 pre:    a = [7, 8, 8], k = 1, l = 0
+Loop 2 post:   a = [7, 8, 8], k = 1, l = 1
+After 2 loop:  a = [7, 8, 8], k = 1, l = 1
+Loop 1 post:   a = [7, 8, 8], k = 2
+After 1 loop:  a = [7, 8, 8], k = 2
+*/
+assert(test2(0) <= test2(1) & test2(1) <= test2(2))
+
+val test3: ZS = ZS(8, 7, 9, 5)
+bubbleSort(test3)
+/*
+Before loop 1: a = [8, 7, 9, 5], k = 0
+Loop 1 pre:    a = [8, 7, 9, 5], k = 0
+Before loop 2: a = [8, 7, 9, 5], k = 0, l = 0
+Loop 2 pre:    a = [8, 7, 9, 5], k = 0, l = 0
+Loop 2 post:   a = [7, 8, 9, 5], k = 0, l = 1
+Loop 2 pre:    a = [7, 8, 9, 5], k = 0, l = 1
+Loop 2 post:   a = [7, 8, 9, 5], k = 0, l = 2
+Loop 2 pre:    a = [7, 8, 9, 5], k = 0, l = 2
+Loop 2 post:   a = [7, 8, 5, 9], k = 0, l = 3
+After 2 loop:  a = [7, 8, 5, 9], k = 0, l = 3
+Loop 1 post:   a = [7, 8, 5, 9], k = 1
+Loop 1 pre:    a = [7, 8, 5, 9], k = 1
+Before loop 2: a = [7, 8, 5, 9], k = 1, l = 0
+Loop 2 pre:    a = [7, 8, 5, 9], k = 1, l = 0
+Loop 2 post:   a = [7, 8, 5, 9], k = 1, l = 1
+Loop 2 pre:    a = [7, 8, 5, 9], k = 1, l = 1
+Loop 2 post:   a = [7, 5, 8, 9], k = 1, l = 2
+After 2 loop:  a = [7, 5, 8, 9], k = 1, l = 2
+Loop 1 post:   a = [7, 5, 8, 9], k = 2
+Loop 1 pre:    a = [7, 5, 8, 9], k = 2
+Before loop 2: a = [7, 5, 8, 9], k = 2, l = 0
+Loop 2 pre:    a = [7, 5, 8, 9], k = 2, l = 0
+Loop 2 post:   a = [5, 7, 8, 9], k = 2, l = 1
+After 2 loop:  a = [5, 7, 8, 9], k = 2, l = 1
+Loop 1 post:   a = [5, 7, 8, 9], k = 3
+After 1 loop:  a = [5, 7, 8, 9], k = 3
+*/
+assert(test3(0) <= test3(1) & test3(1) <= test3(2) & test3(2) <= test3(3))
+
+val test4: ZS = ZS(5, 2, 3, 1, 4)
+bubbleSort(test4)
+/*
+Before loop 1: a = [5, 2, 3, 1, 4], k = 0
+Loop 1 pre:    a = [5, 2, 3, 1, 4], k = 0
+Before loop 2: a = [5, 2, 3, 1, 4], k = 0, l = 0
+Loop 2 pre:    a = [5, 2, 3, 1, 4], k = 0, l = 0
+Loop 2 post:   a = [2, 5, 3, 1, 4], k = 0, l = 1
+Loop 2 pre:    a = [2, 5, 3, 1, 4], k = 0, l = 1
+Loop 2 post:   a = [2, 3, 5, 1, 4], k = 0, l = 2
+Loop 2 pre:    a = [2, 3, 5, 1, 4], k = 0, l = 2
+Loop 2 post:   a = [2, 3, 1, 5, 4], k = 0, l = 3
+Loop 2 pre:    a = [2, 3, 1, 5, 4], k = 0, l = 3
+Loop 2 post:   a = [2, 3, 1, 4, 5], k = 0, l = 4
+After 2 loop:  a = [2, 3, 1, 4, 5], k = 0, l = 4
+Loop 1 post:   a = [2, 3, 1, 4, 5], k = 1
+Loop 1 pre:    a = [2, 3, 1, 4, 5], k = 1
+Before loop 2: a = [2, 3, 1, 4, 5], k = 1, l = 0
+Loop 2 pre:    a = [2, 3, 1, 4, 5], k = 1, l = 0
+Loop 2 post:   a = [2, 3, 1, 4, 5], k = 1, l = 1
+Loop 2 pre:    a = [2, 3, 1, 4, 5], k = 1, l = 1
+Loop 2 post:   a = [2, 1, 3, 4, 5], k = 1, l = 2
+Loop 2 pre:    a = [2, 1, 3, 4, 5], k = 1, l = 2
+Loop 2 post:   a = [2, 1, 3, 4, 5], k = 1, l = 3
+After 2 loop:  a = [2, 1, 3, 4, 5], k = 1, l = 3
+Loop 1 post:   a = [2, 1, 3, 4, 5], k = 2
+Loop 1 pre:    a = [2, 1, 3, 4, 5], k = 2
+Before loop 2: a = [2, 1, 3, 4, 5], k = 2, l = 0
+Loop 2 pre:    a = [2, 1, 3, 4, 5], k = 2, l = 0
+Loop 2 post:   a = [1, 2, 3, 4, 5], k = 2, l = 1
+Loop 2 pre:    a = [1, 2, 3, 4, 5], k = 2, l = 1
+Loop 2 post:   a = [1, 2, 3, 4, 5], k = 2, l = 2
+After 2 loop:  a = [1, 2, 3, 4, 5], k = 2, l = 2
+Loop 1 post:   a = [1, 2, 3, 4, 5], k = 3
+Loop 1 pre:    a = [1, 2, 3, 4, 5], k = 3
+Before loop 2: a = [1, 2, 3, 4, 5], k = 3, l = 0
+Loop 2 pre:    a = [1, 2, 3, 4, 5], k = 3, l = 0
+Loop 2 post:   a = [1, 2, 3, 4, 5], k = 3, l = 1
+After 2 loop:  a = [1, 2, 3, 4, 5], k = 3, l = 1
+Loop 1 post:   a = [1, 2, 3, 4, 5], k = 4
+After 1 loop:  a = [1, 2, 3, 4, 5], k = 4
+*/
+assert(test4(0) <= test4(1) & test4(1) <= test4(2) & test4(2) <= test4(3) & test4(3) <= test4(4))

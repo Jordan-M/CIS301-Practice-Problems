@@ -1,0 +1,3 @@
+∃s covered(s) ∧ (∃c vowel(c) ∧ holds(s, c)), (∃x covered(x)) → ¬gameOver  ⊢  ¬gameOver
+{
+}

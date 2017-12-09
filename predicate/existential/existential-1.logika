@@ -1,0 +1,4 @@
+human(Socrates),  mortal(Socrates)  ⊢ ∃x human(x) ∧ mortal(x)
+{
+
+}

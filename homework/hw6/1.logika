@@ -1,0 +1,29 @@
+import org.sireum.logika._
+
+def isPalindrome(a: ZS): B = {
+  l"""{ ensures ??? // FIXME
+  }"""
+
+  var j: Z = 0
+  var r: B = true
+
+  println("Before loop: a = ", a, ", j = ", j, ", r = ", r)
+
+  while (j < a.size / 2) {
+    l"""{ invariant ??? // FIXME
+          modifies  j, r }"""
+
+    println("Loop pre:    a = ", a, ", j = ", j, ", r = ", r)
+
+    if (a(j) != a(a.size - j - 1)) {
+      r = false
+    }
+    j = j + 1
+
+    println("Loop post:   a = ", a, ", j = ", j, ", r = ", r)
+  }
+
+  println("After loop:  a = ", a, ", j = ", j, ", r = ", r)
+
+  return r
+}

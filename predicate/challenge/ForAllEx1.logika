@@ -1,0 +1,5 @@
+∀x isHuman(x) → isMortal(x), ∀y isMortal(y) → hasSoul(y) ⊢ ∀x isHuman(x) → hasSoul(x)
+{
+
+}
+

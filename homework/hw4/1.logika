@@ -1,0 +1,3 @@
+∀x rabbit(x) → fur(x), ∃y pet(y) ∧ rabbit(y) ⊢ ∃y pet(y) ∧ fur(y)
+{
+}
